@@ -8,14 +8,12 @@ def extract_current():
     Récupère les données météo actuelles depuis l'API OpenWeather pour 5 villes.
     """
 
-    api_key = "51bb7fc76317db88ffc9c704ee5b45ec"
-    cities = [
-    {"name": "Los Angeles", "lat": 34.05, "lon": -118.25},
-    {"name": "San Diego", "lat": 32.72, "lon": -117.16},
-    {"name": "Las Vegas", "lat": 36.17, "lon": -115.14},
-    {"name": "Saint Louis", "lat": 38.63, "lon": -90.20},
-    {"name": "Miami", "lat": 25.76, "lon": -80.19}
-  ]
+    with open("openweather_config.json", "r") as f:
+        config = json.load(f)
+
+    api_key = config["api_key"]
+    cities = config["cities"]
+    
 
     data = []
 
