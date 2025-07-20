@@ -1,8 +1,9 @@
 import pandas as pd
+import os
 
 def clean_data():
     """
-    Transforme les données historiques + actuelles dans un format unifié long.
+    Transforme les données historiques + actuelles + journalières en un format unifié propre.
     """
     hist = pd.read_csv("/home/mitsoa/airflow/weather_pipeline/dags/data/extracted_historical.csv", parse_dates=["date"])
     current = pd.read_csv("/home/mitsoa/airflow/weather_pipeline/dags/data/current_data.csv", parse_dates=["date"])
@@ -19,5 +20,29 @@ def clean_data():
         df["city"] = city.replace("_", " ").title()
         df_long = pd.concat([df_long, df], ignore_index=True)
 
-    combined = pd.concat([df_long, current], ignore_index=True)
-    combined.to_csv("/home/mitsoa/airflow/weather_pipeline/dags/data/combined_data.csv", index=False)
+    # Fusion avec current_data.csv
+    new_data = pd.concat([df_long, current], ignore_index=True)
+    new_data.dropna(inplace=True)
+
+    # 🔽 Charger tous les fichiers journaliers dans processed/daily/
+    processed_dir = "/home/mitsoa/airflow/weather_pipeline/dags/data/processed/daily"
+    daily_data = pd.DataFrame()
+
+    for file in os.listdir(processed_dir):
+        if file.endswith(".csv"):
+            path = os.path.join(processed_dir, file)
+            df = pd.read_csv(path, parse_dates=["date"])
+            df.dropna(inplace=True)
+            daily_data = pd.concat([daily_data, df], ignore_index=True)
+
+    # 🔁 Fusionner avec les nouvelles données
+    all_data = pd.concat([new_data, daily_data], ignore_index=True)
+
+    # 🔁 Supprimer les doublons + données manquantes
+    all_data.dropna(inplace=True)
+    all_data.drop_duplicates(subset=["date", "city"], inplace=True)
+
+    # 📤 Sauvegarder
+    combined_path = "/home/mitsoa/airflow/weather_pipeline/dags/data/combined_data.csv"
+    all_data.to_csv(combined_path, index=False)
+    print(f" Données combinées sauvegardées dans : {combined_path}")
