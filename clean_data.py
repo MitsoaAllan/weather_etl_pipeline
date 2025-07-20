@@ -24,7 +24,7 @@ def clean_data():
     new_data = pd.concat([df_long, current], ignore_index=True)
     new_data.dropna(inplace=True)
 
-    # 🔽 Charger tous les fichiers journaliers dans processed/daily/
+    # Charger tous les fichiers journaliers dans processed/daily/
     processed_dir = "/home/mitsoa/airflow/weather_pipeline/dags/data/processed/daily"
     daily_data = pd.DataFrame()
 
@@ -35,14 +35,14 @@ def clean_data():
             df.dropna(inplace=True)
             daily_data = pd.concat([daily_data, df], ignore_index=True)
 
-    # 🔁 Fusionner avec les nouvelles données
+    #  Fusionner avec les nouvelles données
     all_data = pd.concat([new_data, daily_data], ignore_index=True)
 
-    # 🔁 Supprimer les doublons + données manquantes
+    #  Supprimer les doublons + données manquantes
     all_data.dropna(inplace=True)
     all_data.drop_duplicates(subset=["date", "city"], inplace=True)
 
-    # 📤 Sauvegarder
+    # Sauvegarder
     combined_path = "/home/mitsoa/airflow/weather_pipeline/dags/data/combined_data.csv"
     all_data.to_csv(combined_path, index=False)
     print(f" Données combinées sauvegardées dans : {combined_path}")
