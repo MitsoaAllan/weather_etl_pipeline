@@ -13,4 +13,4 @@ def extract_historical():
     else:
         df = pd.read_csv("/home/mitsoa/airflow/weather_pipeline/dags/data/cleaned_historical_data/historical_weather.csv", parse_dates=["date"])
         df.to_csv(output_path, index=False)
-        print("✅ Données extraites et enregistrées.")
+        print("Données extraites et enregistrées.")
