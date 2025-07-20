@@ -5,10 +5,10 @@ from functools import reduce
 Récupération et fusion des fichiers qui contiennent l'historique de données des météos des villes
 """
 files = {
-    "/home/mitsoa/airflow/weather_pipeline/data/historical_data/temperature.csv": "temp",
+    "/home/mitsoa/airflow/weather_pipeline/dags/data/historical_data/temperature.csv": "temp",
     "/home/mitsoa/airflow/weather_pipeline/dags/data/historical_data/humidity.csv": "humidity",
-    "/home/mitsoa/airflow/weather_pipeline/data/historical_data/pressure.csv": "pressure",
-    "/home/mitsoa/airflow/weather_pipeline/data/historical_data/wind_speed.csv": "wind",
+    "/home/mitsoa/airflow/weather_pipeline/dags/data/historical_data/pressure.csv": "pressure",
+    "/home/mitsoa/airflow/weather_pipeline/dags/data/historical_data/wind_speed.csv": "wind",
 }
 
 dataframes = []
@@ -37,4 +37,4 @@ df_merged = reduce(lambda left, right: pd.merge(left, right, on='date'), datafra
 
 df_merged = df_merged.round(2)
 
-df_merged.to_csv('/home/mitsoa/airflow/weather_pipeline/data/cleaned_historical_data/historical_weather.csv', index=False)
+df_merged.to_csv('/home/mitsoa/airflow/weather_pipeline/dags/data/cleaned_historical_data/historical_weather.csv', index=False)
